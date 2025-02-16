@@ -92,14 +92,13 @@ void printadjList(Graph* g) {
     }
 }
 
-void bfsTraversalOutput(Graph* g, int source) {
+bool bfs(Graph *g, int source, bool visited[MAX]) {
     int queue[MAX], front = 0, rear = 0;
 
     // Initialize distances and parents
     for (int i = 1; i <= g->V; i++) {
         parent[i] = -1;
         dist[i] = -1;
-        visited[i] = false;
     }
 
     dist[source] = 0;
@@ -119,13 +118,15 @@ void bfsTraversalOutput(Graph* g, int source) {
         }
     }
 
-    // Output BFS traversal in table format
+    // Output BFS traversal result
     cout << "BFS Traversal from vertex " << source << ":\n";
     cout << "Vertex\tDistance\tParent\n";
     for (int i = 1; i <= g->V; i++) {
         cout << i << "\t  " << (dist[i] == -1 ? "-" : to_string(dist[i])) << "\t\t";
         cout << (parent[i] == -1 ? "-" : to_string(parent[i])) << "\n";
     }
+
+    return false;  // Return value remains unchanged as per your original algorithm
 }
 
 
@@ -217,15 +218,15 @@ void findShortestPath(Graph* g, int source, int dest) {
 
 void displayMenu() {
     cout << "\nGraph Operations Menu:\n";
-    cout << "1. Add Edge\n";
-    cout << "2. Print Adjacency Matrix\n";
-    cout << "3. Print Adjacency List\n";
+    cout << "1. Insert Edge\n";
+    cout << "2. Adjacency Matrix\n";
+    cout << "3. Adjacency List\n";
     cout << "4. BFS Traversal\n";
     cout << "5. Find Shortest Path\n";
     cout << "6. Detect Cycle\n";
     cout << "7. Find Connected Components\n";
-    cout << "8. Exit\n";
-    cout << "Enter your choice: ";
+    cout << "8. Exit Program\n";
+    cout << "Enter your choice here: ";
 }
 
 int main() {
@@ -243,7 +244,7 @@ int main() {
         cin >> choice;
         switch (choice) {
             case 1:
-                cout << "Enter edge (u v): ";
+                cout << "Enter edge (u,v): ";
                 cin >> u >> v;
                 addEdge(&g, u, v, isDirected);
                 cout << "Edge added.\n";
@@ -254,12 +255,13 @@ int main() {
             case 3:
                 printadjList(&g);
                 break;
-           case 4:
+            case 4:
                 cout << "Enter source vertex for BFS: ";
                 cin >> source;
-                bfsTraversalOutput(&g, source);
+                fill(visited, visited + MAX, false);
+                bfs(&g, source, visited);
+                cout << "BFS Traversal from vertex " << source << " completed.\n";
                 break;
-
             case 5:
                 cout << "Enter source and destination: ";
                 cin >> source >> dest;

@@ -1,34 +1,59 @@
 #include <iostream>
+#include <vector>
 #include <algorithm>
+#include <iomanip>
+
 using namespace std;
 
 struct Item {
-    int weight, value;
+    int value, weight;
     double ratio;
 };
 
-bool compare(Item a, Item b) {
+bool compareByValue(const Item &a, const Item &b) {
+    return a.value > b.value;
+}
+
+bool compareByWeight(const Item &a, const Item &b) {
+    return a.weight < b.weight;
+}
+
+bool compareByRatio(const Item &a, const Item &b) {
     return a.ratio > b.ratio;
 }
 
-double fractionalKnapsack(int capacity, Item items[], int n) {
-    for (int i = 0; i < n; i++)
-        items[i].ratio = (double)items[i].value / items[i].weight;
+double fractionalKnapsack(vector<Item> items, int capacity, string strategy) {
+    double totalValue = 0.0;
+    vector<pair<int, double>> proportions;
 
-    sort(items, items + n, compare);
+    if (strategy == "profit")
+        sort(items.begin(), items.end(), compareByValue);
+    else if (strategy == "weight")
+        sort(items.begin(), items.end(), compareByWeight);
+    else if (strategy == "profit/weight")
+        sort(items.begin(), items.end(), compareByRatio);
 
-    double maxValue = 0.0;
-    for (int i = 0; i < n; i++) {
-        if (capacity >= items[i].weight) {
-            maxValue += items[i].value;
-            capacity -= items[i].weight;
+    for (auto &item : items) {
+        if (capacity >= item.weight) {
+            capacity -= item.weight;
+            totalValue += item.value;
+            proportions.push_back({item.value, 1.0});
         } else {
-            maxValue += items[i].ratio * capacity;
+            double fraction = (double)capacity / item.weight;
+            totalValue += item.value * fraction;
+            proportions.push_back({item.value, fraction});
             break;
         }
     }
 
-    return maxValue;
+    cout << "Based on " << strategy << endl;
+    cout << "Items taken (value,fraction): { ";
+    for (auto &p : proportions) {
+        cout << "(" << p.first << ", " << fixed << setprecision(2) << p.second << ") ";
+    }
+    cout << "} \nTotal Value: " << fixed << setprecision(2) << totalValue << "\n\n";
+
+    return totalValue;
 }
 
 int main() {
@@ -36,21 +61,27 @@ int main() {
     cout << "Enter number of items: ";
     cin >> n;
 
-    Item items[n];
-
-    cout << "Enter weights and values of the items:\n";
+    vector<Item> items(n);
+    cout << "Enter values and weights of the items:\n";
     for (int i = 0; i < n; i++) {
-        cout << "Item " << i + 1 << " - Weight: ";
-        cin >> items[i].weight;
-        cout << "Item " << i + 1 << " - Value: ";
-        cin >> items[i].value;
+        cin >> items[i].value >> items[i].weight;
+        items[i].ratio = (double)items[i].value / items[i].weight;
     }
 
     cout << "Enter knapsack capacity: ";
     cin >> capacity;
 
-    double maxProfit = fractionalKnapsack(capacity, items, n);
-    cout << "Maximum value that can be obtained: " << maxProfit << endl;
+    double value1 = fractionalKnapsack(items, capacity, "profit");
+    double value2 = fractionalKnapsack(items, capacity, "weight");
+    double value3 = fractionalKnapsack(items, capacity, "profit/weight");
+
+    cout << "Optimal solution is given by ";
+    if (value1 >= value2 && value1 >= value3)
+        cout << "Profit Strategy \n";
+    else if (value2 >= value1 && value2 >= value3)
+        cout << "Based on Weight Strategy \n";
+    else
+        cout << "Based on Profit/Weight Strategy \n";
 
     return 0;
 }

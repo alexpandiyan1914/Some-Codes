@@ -1,59 +1,48 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
-#include <iomanip>
 
 using namespace std;
 
-struct Item {
-    int value, weight;
-    double ratio;
-};
+void fractionalKnapsack(int n, int weights[], int values[], int capacity) {
+    // Arrays to store value/weight ratios and indices
+    double ratio[n];
+    int index[n];
+    
+    // Calculate value/weight ratios and initialize indices
+    for (int i = 0; i < n; i++) {
+        ratio[i] = (double)values[i] / weights[i];
+        index[i] = i;
+    }
 
-bool compareByValue(const Item &a, const Item &b) {
-    return a.value > b.value;
-}
+    // Sort items based on value/weight ratio using simple bubble sort
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (ratio[j] < ratio[j + 1]) {
+                // Swap ratios
+                double tempRatio = ratio[j];
+                ratio[j] = ratio[j + 1];
+                ratio[j + 1] = tempRatio;
 
-bool compareByWeight(const Item &a, const Item &b) {
-    return a.weight < b.weight;
-}
+                // Swap indices
+                int tempIndex = index[j];
+                index[j] = index[j + 1];
+                index[j + 1] = tempIndex;
+            }
+        }
+    }
 
-bool compareByRatio(const Item &a, const Item &b) {
-    return a.ratio > b.ratio;
-}
-
-double fractionalKnapsack(vector<Item> items, int capacity, string strategy) {
     double totalValue = 0.0;
-    vector<pair<int, double>> proportions;
-
-    if (strategy == "profit")
-        sort(items.begin(), items.end(), compareByValue);
-    else if (strategy == "weight")
-        sort(items.begin(), items.end(), compareByWeight);
-    else if (strategy == "profit/weight")
-        sort(items.begin(), items.end(), compareByRatio);
-
-    for (auto &item : items) {
-        if (capacity >= item.weight) {
-            capacity -= item.weight;
-            totalValue += item.value;
-            proportions.push_back({item.value, 1.0});
+    for (int i = 0; i < n; i++) {
+        int idx = index[i];
+        if (capacity >= weights[idx]) {
+            capacity -= weights[idx];
+            totalValue += values[idx];
         } else {
-            double fraction = (double)capacity / item.weight;
-            totalValue += item.value * fraction;
-            proportions.push_back({item.value, fraction});
+            totalValue += values[idx] * ((double)capacity / weights[idx]);
             break;
         }
     }
 
-    cout << "Based on " << strategy << endl;
-    cout << "Items taken (value,fraction): { ";
-    for (auto &p : proportions) {
-        cout << "(" << p.first << ", " << fixed << setprecision(2) << p.second << ") ";
-    }
-    cout << "} \nTotal Value: " << fixed << setprecision(2) << totalValue << "\n\n";
-
-    return totalValue;
+    cout << "Maximum value in Knapsack = " << totalValue << endl;
 }
 
 int main() {
@@ -61,27 +50,16 @@ int main() {
     cout << "Enter number of items: ";
     cin >> n;
 
-    vector<Item> items(n);
-    cout << "Enter values and weights of the items:\n";
+    int weights[n], values[n];
+    cout << "Enter weights and values for each item:\n";
     for (int i = 0; i < n; i++) {
-        cin >> items[i].value >> items[i].weight;
-        items[i].ratio = (double)items[i].value / items[i].weight;
+        cin >> weights[i] >> values[i];
     }
 
     cout << "Enter knapsack capacity: ";
     cin >> capacity;
 
-    double value1 = fractionalKnapsack(items, capacity, "profit");
-    double value2 = fractionalKnapsack(items, capacity, "weight");
-    double value3 = fractionalKnapsack(items, capacity, "profit/weight");
-
-    cout << "Optimal solution is given by ";
-    if (value1 >= value2 && value1 >= value3)
-        cout << "Profit Strategy \n";
-    else if (value2 >= value1 && value2 >= value3)
-        cout << "Based on Weight Strategy \n";
-    else
-        cout << "Based on Profit/Weight Strategy \n";
+    fractionalKnapsack(n, weights, values, capacity);
 
     return 0;
 }

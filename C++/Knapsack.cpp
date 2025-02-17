@@ -1,46 +1,56 @@
-#include <stdio.h>
+#include <iostream>
+#include <algorithm>
+using namespace std;
 
-int max(int a, int b) {
-    return (a > b) ? a : b;
+struct Item {
+    int weight, value;
+    double ratio;
+};
+
+bool compare(Item a, Item b) {
+    return a.ratio > b.ratio;
 }
 
-int knapsack(int capacity, int weights[], int values[], int n) {
-    int dp[n + 1][capacity + 1];
+double fractionalKnapsack(int capacity, Item items[], int n) {
+    for (int i = 0; i < n; i++)
+        items[i].ratio = (double)items[i].value / items[i].weight;
 
-    for (int i = 0; i <= n; i++) {
-        for (int w = 0; w <= capacity; w++) {
-            if (i == 0 || w == 0)
-                dp[i][w] = 0;
-            else if (weights[i - 1] <= w)
-                dp[i][w] = max(values[i - 1] + dp[i - 1][w - weights[i - 1]], dp[i - 1][w]);
-            else
-                dp[i][w] = dp[i - 1][w];
+    sort(items, items + n, compare);
+
+    double maxValue = 0.0;
+    for (int i = 0; i < n; i++) {
+        if (capacity >= items[i].weight) {
+            maxValue += items[i].value;
+            capacity -= items[i].weight;
+        } else {
+            maxValue += items[i].ratio * capacity;
+            break;
         }
     }
 
-    return dp[n][capacity];
+    return maxValue;
 }
 
 int main() {
     int n, capacity;
-    printf("Enter number of items: ");
-    scanf("%d", &n);
+    cout << "Enter number of items: ";
+    cin >> n;
 
-    int weights[n], values[n];
+    Item items[n];
 
-    printf("Enter weights and values of the items:\n");
+    cout << "Enter weights and values of the items:\n";
     for (int i = 0; i < n; i++) {
-        printf("Item %d - Weight: ", i + 1);
-        scanf("%d", &weights[i]);
-        printf("Item %d - Value: ", i + 1);
-        scanf("%d", &values[i]);
+        cout << "Item " << i + 1 << " - Weight: ";
+        cin >> items[i].weight;
+        cout << "Item " << i + 1 << " - Value: ";
+        cin >> items[i].value;
     }
 
-    printf("Enter knapsack capacity: ");
-    scanf("%d", &capacity);
+    cout << "Enter knapsack capacity: ";
+    cin >> capacity;
 
-    int maxProfit = knapsack(capacity, weights, values, n);
-    printf("Maximum value that can be obtained: %d\n", maxProfit);
+    double maxProfit = fractionalKnapsack(capacity, items, n);
+    cout << "Maximum value that can be obtained: " << maxProfit << endl;
 
     return 0;
 }

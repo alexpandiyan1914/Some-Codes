@@ -27,7 +27,7 @@ public class Interpolation {
         }
         System.out.println("Enter the key :");
         int key = sc.nextInt();
-
+        Arrays.sort(arr); //ensure the array is sorted
         int result = Interpol(arr,n,key);
         if(result != -1){
             System.out.println("The value "+key+" is founded at index "+result);

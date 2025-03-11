@@ -4,6 +4,12 @@ public class Interpolation {
     static int Interpol(int[] arr, int n, int key){
         int low = 0;
         int high = n - 1;
+        //check for Arithmetic exception
+        if(arr[high] == arr[low]){
+            if(arr[low] == key) return low;
+            else return -1;
+        }
+
         while(low <= high && key >= arr[low] && key <= arr[high]){
             int pos = low + ((key - arr[low]) * (high - low) / (arr[high] - arr[low]));
             if(arr[pos] == key){
@@ -27,13 +33,13 @@ public class Interpolation {
         }
         System.out.println("Enter the key :");
         int key = sc.nextInt();
-        Arrays.sort(arr); //ensure the array is sorted
+        Arrays.sort(arr);
         int result = Interpol(arr,n,key);
         if(result != -1){
             System.out.println("The value "+key+" is founded at index "+result);
         }else{
             System.out.println("Element not found !");
         }
-
+        sc.close();
     }
 }

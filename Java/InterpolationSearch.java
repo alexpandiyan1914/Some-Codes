@@ -4,14 +4,19 @@ public class Interpolation {
     static int Interpol(int[] arr, int n, int key){
         int low = 0;
         int high = n - 1;
-        //check for Arithmetic exception
-        if(arr[high] == arr[low]){
-            if(arr[low] == key) return low;
-            else return -1;
-        }
 
         while(low <= high && key >= arr[low] && key <= arr[high]){
-            int pos = low + ((key - arr[low]) * (high - low) / (arr[high] - arr[low]));
+            int pos = 0;
+
+            try{  //handling ArthmeticException
+                pos = low + ((key - arr[low]) * (high - low) / (arr[high] - arr[low]));
+            }catch(ArithmeticException e){
+                if(arr[low] == arr[high]){
+                    if(arr[low] == key) return low;
+                    else return -1;
+                }
+            }
+
             if(arr[pos] == key){
                 return pos;
             }else if(arr[pos] < key){

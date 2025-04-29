@@ -51,17 +51,17 @@ void printTable(vector<int>& parent, vector<vector<int>>& iterDistances, vector<
 
 // Prim’s Algorithm function
 void primMST(vector<vector<int>>& graph, int n) {
-    vector<int> parent(n, -1);  // Stores the MST
-    vector<int> key(n, INF);    // Key values to pick the minimum weight edge
-    vector<bool> inMST(n, false); // To track vertices included in MST
-    vector<vector<int>> iterDistances(n, vector<int>(n, INF)); // Store distances for each iteration
-    vector<int> chosenVertex(n, -1); // Stores the vertex chosen in each iteration
+    vector<int> parent(n, -1);  
+    vector<int> key(n, INF);    
+    vector<bool> inMST(n, false); 
+    vector<vector<int>> iterDistances(n, vector<int>(n, INF)); 
+    vector<int> chosenVertex(n, -1); 
 
-    key[0] = 0; // Starting from vertex 0
+    key[0] = 0; 
 
     for (int count = 0; count < n; count++) {
         int u = minKey(key, inMST, n);
-        if (u == -1) break; // If no vertex is left to pick, stop early
+        if (u == -1) break; 
         inMST[u] = true;
         chosenVertex[count] = u;
 
@@ -70,7 +70,7 @@ void primMST(vector<vector<int>>& graph, int n) {
                 parent[v] = u, key[v] = graph[u][v];
 
         for (int i = 0; i < n; i++)
-            iterDistances[i][count] = key[i]; // Store distances after each iteration
+            iterDistances[i][count] = key[i]; 
     }
 
     printTable(parent, iterDistances, chosenVertex, n);
@@ -91,7 +91,7 @@ int main() {
         int u, v, w;
         cin >> u >> v >> w;
         graph[u][v] = w;
-        graph[v][u] = w;  // Since it's an undirected graph
+        graph[v][u] = w;  
     }
 
     primMST(graph, n);

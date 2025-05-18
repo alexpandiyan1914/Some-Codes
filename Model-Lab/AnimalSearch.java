@@ -50,17 +50,14 @@ public class AnimalSearch {
         return -1;
     }
 
-    // Main
     public static void main(String[] args) {
         String[] animals = { "Zebra", "Elephant", "Dog", "Cat", "Giraffe", "Bear", "Lion", "Monkey" };
 
         System.out.println("Original list: " + Arrays.toString(animals));
 
-        // Sort using Merge Sort
         mergeSort(animals, 0, animals.length - 1);
         System.out.println("Sorted list: " + Arrays.toString(animals));
 
-        // Search
         String target = "Giraffe";
         int index = binarySearch(animals, target);
 

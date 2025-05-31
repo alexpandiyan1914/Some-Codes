@@ -39,7 +39,6 @@ public class RabinKarpSpurious13 {
                 }
             }
 
-            // Compute hash of next window
             if (i < n - m) {
                 t = (d * (t - (text.charAt(i) - '0') * h) + (text.charAt(i + m) - '0')) % q;
                 if (t < 0)

@@ -29,7 +29,8 @@ public class BinarySearch {
             arr[i] = sc.nextInt();
         }
 
-        Arrays.sort(arr); // Ensuring array is sorted
+        Arrays.sort(arr); //sorted array
+
         System.out.println("Sorted Array: " + Arrays.toString(arr));
 
         System.out.print("Enter the element to search: ");

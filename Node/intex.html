@@ -6,16 +6,52 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Simple Form</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-</head>
+    <style>
+        h2{
+            color: black;
+            text-align: center;
+        }
 
+        #userForm{
+            display: block;
+            align-items: center;
+            text-align: center;
+        }
+
+        .inputs{
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 2px solid black;
+            border-radius: 25px;
+            width:25%;
+        }
+
+        .btn{
+            padding: 12px;
+            width: 15%;
+            background-color: burlywood;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s all ease;
+        }
+
+        .btn:hover{
+            transform: translateY(-3px);
+            background-color: rgb(184, 133, 67);
+        }
+    </style>
 <body>
     <h2>Fill the Form</h2>
 
     <form id="userForm">
-        <input type="text" id="name" placeholder="Enter your name" required>
-        <input type="email" id="email" placeholder="Enter your email" required>
-        <button type="submit">Submit</button>
+        <input type="text" id="name" class="inputs" placeholder="Enter your name" required><br>
+        <input type="email" id="email" class="inputs" placeholder="Enter your email" required><br>
+        <button type="submit" class="btn">Submit</button>
     </form>
+
+    <p id="details"></p>
 
     <script>
         document.getElementById("userForm").addEventListener("submit", async function (events) {
@@ -42,7 +78,11 @@
                     })
                 });
 
+                const data = await response.json();
+
                 console.log("Details Inserted Successfully");
+                console.log(data);
+                document.getElementById('details').innerText = data.message;
             } catch (error) {
                 console.error("Error", error);
             }

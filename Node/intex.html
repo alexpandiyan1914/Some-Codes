@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Simple Form</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+
+<body>
+    <h2>Fill the Form</h2>
+
+    <form id="userForm">
+        <input type="text" id="name" placeholder="Enter your name" required>
+        <input type="email" id="email" placeholder="Enter your email" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById("userForm").addEventListener("submit", async function (events) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+
+            if (name == " " || email == " ") {
+                console.log("Fill the form...");
+                alert("please fill the form");
+                return;
+            }
+
+            try {
+                const response = await fetch("http://localhost:8080/users", {
+                    method: 'POST',
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email
+                    })
+                });
+
+                console.log("Details Inserted Successfully");
+            } catch (error) {
+                console.error("Error", error);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
